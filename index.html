@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lembrete do Namorado 💕</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 40px;
+    transition: background 1s ease;
+    overflow-x: hidden;
+  }
+  .card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    padding: 30px;
+    max-width: 350px;
+    position: relative;
+    margin-bottom: 20px;
+  }
+  h2 { color: #333; }
+  p { font-size: 18px; margin: 15px 0; }
+  button {
+    padding: 12px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.1s;
+  }
+  button:active { transform: scale(0.95); }
+  .drink { background: #00bfff; color: white; }
+  .ignore { background: #ff69b4; color: white; }
+  #message { font-size: 18px; color: #00796b; margin-top: 15px; min-height: 24px; }
+  #emoji { font-size: 30px; animation: float 0.8s ease-out; display: inline-block; }
+  #missao { font-size: 20px; color: #ff4500; margin-top: 15px; font-weight: bold; animation: pulse 1s ease-in-out 3; }
+  #quadro {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 20px;
+    max-width: 350px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  #quadro h3 { margin-top: 0; color: #ff4500; }
+  #quadro ul { list-style: none; padding-left: 0; text-align: left; }
+  .confete, .coracao {
+    position: fixed;
+    font-size: 24px;
+    pointer-events: none;
+    animation: cair 3s linear forwards;
+    z-index: 9999;
+  }
+  @keyframes float { 0% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(-20px); opacity: 1; } 100% { transform: translateY(-40px); opacity: 0; } }
+  @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+  @keyframes cair { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(600px) rotate(360deg); opacity: 0; } }
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>💖 Lembrete do Namorado 💖</h2>
+  <p>Já tomou água, princesa?</p>
+  <p>💧 Cada garrafinha = saúde e fofura 💕</p>
+  <button class="drink" onclick="beberAgua()">Beber agora</button>
+  <button class="ignore" onclick="ignorar()">Ignorar</button>
+  <p id="message"></p>
+  <p>Total de garrafinhas hoje: <span id="count">0</span> 💧</p>
+  <div id="emoji"></div>
+  <div id="missao"></div>
+</div>
+
+<div id="quadro" class="card">
+  <h3>🏆 Suas Conquistas</h3>
+  <ul id="conquistas"></ul>
+</div>
+
+<script>
+let garrafinhas = 0;
+const metaMissao = 3;
+const mensagensBeber = [
+  "Muito bem! 🥳 Continue hidratada, meu amor 💖",
+  "Você é incrível! 💕 Cada garrafinha conta!",
+  "Hidratação em dia! 😍 Fico feliz vendo você cuidar de si!",
+  "Perfeito! 💖 Continue assim, princesa linda!",
+  "Mais uma garrafinha! 💧 Você é maravilhosa!",
+  "Uau! 🥰 Cada garrafinha deixa você ainda mais radiante!",
+  "Ótimo trabalho! 💕 Meu amor, continue se cuidando!"
+];
+const mensagensIgnorar = [
+  "Ei! Tudo bem, mas lembra que hidratação é amor próprio 😏",
+  "Não desanime! 💖 Vamos tentar beber água agora?",
+  "Não tem problema, mas o próximo garrafinha vai ser especial! 💧",
+  "Te incentivo a se cuidar, princesa 😍 Um garrafinha agora faz toda diferença!",
+  "Tudo bem, só não esquece de se amar e se hidratar 💕"
+];
+const recompensas = [
+  "🍫 Chocolate delicioso!",
+  "💌 Um bilhetinho carinhoso!",
+  "😘 Um beijo especial!",
+  "🎁 Pequeno mimo surpresa!",
+  "💖 Abraço apertado!"
+];
+const fundos = [
+  'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80',
+  'https://images.unsplash.com/photo-1493244040629-496f6d136cc3?auto=format&fit=crop&w=1350&q=80',
+  'https://images.unsplash.com/photo-1529631766008-8c9321edbdb9?auto=format&fit=crop&w=1350&q=80',
+  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1350&q=80'
+];
+
+function gerarConfete() {
+  const confete = document.createElement('div');
+  confete.className = Math.random() > 0.5 ? 'confete' : 'coracao';
+  confete.innerText = Math.random() > 0.5 ? '🎉' : '💖';
+  confete.style.left = Math.random() * window.innerWidth + 'px';
+  document.body.appendChild(confete);
+  setTimeout(() => confete.remove(), 3000);
+}
+
+function beberAgua() {
+  garrafinhas++;
+  document.getElementById('count').innerText = garrafinhas;
+
+  const msg = mensagensBeber[Math.floor(Math.random() * mensagensBeber.length)];
+  document.getElementById('message').innerText = msg;
+
+  const emojiDiv = document.getElementById('emoji');
+  emojiDiv.innerText = "💧";
+  setTimeout(() => { emojiDiv.innerText = ""; }, 800);
+
+  if (garrafinhas % metaMissao === 0) {
+    const missaoDiv = document.getElementById('missao');
+    const recompensa = recompensas[Math.floor(Math.random() * recompensas.length)];
+    missaoDiv.innerText = `🎉 Missão completa! Você ganhou: ${recompensa}`;
+
+    // Adiciona ao quadro de conquistas
+    const lista = document.getElementById('conquistas');
+    const item = document.createElement('li');
+    item.textContent = `Garrafinha ${garrafinhas}: ${recompensa}`;
+    lista.appendChild(item);
+
+    // Troca de fundo
+    document.body.style.background = `url('${fundos[Math.floor(Math.random() * fundos.length)]}') no-repeat center center fixed`;
+    document.body.style.backgroundSize = 'cover';
+
+    // Confetes e corações
+    for (let i = 0; i < 15; i++) gerarConfete();
+
+    setTimeout(() => { missaoDiv.innerText = ""; }, 4000);
+  }
+}
+
+function ignorar() {
+  const msg = mensagensIgnorar[Math.floor(Math.random() * mensagensIgnorar.length)];
+  document.getElementById('message').innerText = msg;
+}
+</script>
+</body>
+</html>￼Enter
